@@ -1,5 +1,5 @@
 apiVersion: example.com/v1alpha1
-kind: MvcDb
+kind: Mypython
 metadata:
   name: my-python-sample
 spec:
