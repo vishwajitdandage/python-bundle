@@ -1,0 +1,8 @@
+apiVersion: example.com/v1alpha1
+kind: MvcDb
+metadata:
+  name: my-python-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/mvc-db-app/values.yaml
+  frontend:
+    image: quay.io/vishwajitdandage/my-app

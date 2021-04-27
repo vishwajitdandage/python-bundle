@@ -1,0 +1,3 @@
+---
+frontend:
+  image: quay.io/vishwajitdandage/my-app

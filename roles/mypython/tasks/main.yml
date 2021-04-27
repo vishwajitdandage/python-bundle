@@ -1,0 +1,60 @@
+---
+- name: deploy calci frontend
+  vars:
+    frontend: 
+      image:  "{{ lookup('env','RELATED_IMAGE_FRONTEND') }}"    
+  k8s:
+    definition:
+        apiVersion: v1
+		kind: Deployment
+		metadata:
+		  name: calculator
+		  namespace: '{{ ansible_operator_meta.namespace }}'
+		spec:
+		  selector:
+			matchLabels:
+			  app: flask-calculator
+		  replicas: 3
+		  template:
+			metadata:
+			  labels:
+				app: flask-calculator
+			spec:
+			  containers:
+				- name: flask-calculator
+				  image: frontend.image
+				  ports:
+					- containerPort: 5000
+
+- name: create service for flask frontend
+  k8s:
+    definition:
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: flask-service
+		  namespace: '{{ ansible_operator_meta.namespace }}'
+		spec:
+		  selector:
+			app: flask-calculator
+		  ports:
+			- protocol: TCP
+			  port: 5001
+			  targetPort: 5000
+
+
+- name: create route for guestbook frontend
+  k8s:
+    definition:
+        apiVersion: route.openshift.io/v1
+		kind: Route
+		metadata:
+		  name: flask-route
+		  namespace: '{{ ansible_operator_meta.namespace }}'
+		spec:
+		  path: /
+		  to:
+			kind: Service
+			name: flask-service
+		  port:
+			targetPort: 5000

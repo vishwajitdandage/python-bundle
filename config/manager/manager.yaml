@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: my-python-app
+  name: system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-python-app  
+  labels:
+    control-plane: my-python-app
+spec:
+  selector:
+    matchLabels:
+      control-plane: my-python-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        control-plane: my-python-app
+    spec:
+      serviceAccountName: my-python-app
+      containers:
+        - name: manager
+          image: quay.io/<username>/ansible-my-python-app-operator:v0.0.1
+          imagePullPolicy: Always
+          args:
+            - "--enable-leader-election"
+            - "--leader-election-id=my-python-app"
+          env:
+            - name: ANSIBLE_GATHERING
+              value: explicit            
+            - name: OPERATOR_NAME
+              value: "my-python-app"
+            - name: RELATED_IMAGE_FRONTEND
+              value: quay.io/vishwajitdandage/my-app              
+      terminationGracePeriodSeconds: 10
