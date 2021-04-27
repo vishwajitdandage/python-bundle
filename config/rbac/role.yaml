@@ -45,9 +45,9 @@ rules:
 - apiGroups:
   - example.com
   resources:
-  - mypythons
-  - mypythons/status
-  - mypythons/finalizers
+  - Mypython
+  - Mypython/status
+  - Mypython/finalizers
   verbs:
   - create
   - delete
