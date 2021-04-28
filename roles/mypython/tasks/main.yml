@@ -1,52 +1,68 @@
 ---
 - name: deploy calci frontend
   vars:
-    frontend: 
-      image:  "{{ lookup('env','RELATED_IMAGE_FRONTEND') }}"    
+    frontend:
+      image: "{{  lookup('env', 'RELATED_IMAGE_FRONTEND') }}"
+  k8s:
+    definations:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: flask-calculator
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        labels:
+          app: flask-calculator
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: flask-calculator
+          spec:
+            serviceAccount: my-python-app
+            containers:
+            - name: go-web
+              image: {{ frontend.image }}
+              imagePullPolicy: Always
+              ports:
+              - name: flask-calculator
+                containerPort: 5000
+              securityContext: {}
+          serviceAccountName: my-python-app
+          serviceAccount: my-python-app
+        strategy:
+          type: Recreate
+- name: create service for flask-calculator
   k8s:
     definition:
-			apiVersion: apps/v1
-			kind: Deployment
-			metadata:
-				name: flask-calculator
-				namespace: '{{ ansible_operator_meta.namespace }}'
-			spec:
-				selector:
-					app: flask-calculator
-				containers:
-				- name: flask-calculator
-					image: {{ frontend.image }}
-					ports:
-						- containerPort: 5000
-
-- name: create service for flask frontend
+      apiVersion: v1
+      kind: Service
+      metadata: 
+        name: flask-service
+        namespace: '{{ ansible_operator_meta.namespace }}'
+        labels:
+          app: flask-calculator
+      spec:
+        selector:
+          app: flask-calculator
+        ports:
+          - protocol: TCP
+            port: 5001
+            targetPort: 5000
+- name: create route for flask-calculator
   k8s:
     definition:
-			apiVersion: v1
-			kind: Service
-			metadata:
-				name: flask-service
-				namespace: '{{ ansible_operator_meta.namespace }}'
-			spec:
-				selector:
-					app: flask-calculator
-				ports:
-				- protocol: TCP
-					port: 5001
-					targetPort: 5000
-
-
-- name: create route for frontend
-  k8s:
-    definition:
-        apiVersion: route.openshift.io/v1
-				kind: Route
-				metadata:
-					name: flask-route
-					namespace: '{{ ansible_operator_meta.namespace }}'
-				spec:
-					path: /
-					to:
-						kind: Service
-						name: flask-service 
-						targetPort: 5100
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: flask-route
+        namespace: '{{ ansible_operator_meta.namespace }}'
+        labels:
+          app: flask-calculator
+      spec:
+        path: /
+        to:
+          kind: Service
+          name: flask-service
+          weight: 100
+        port:
+          targetPort: 5001
