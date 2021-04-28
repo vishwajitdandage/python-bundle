@@ -17,6 +17,10 @@
         selector:
           matchLabels:
             app: flask-calculator
+        template:
+          metadata:
+            labels:
+              app: flask-calculator  
           spec:
             serviceAccount: my-python-app
             containers:
