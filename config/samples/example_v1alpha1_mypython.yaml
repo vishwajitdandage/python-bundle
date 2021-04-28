@@ -6,3 +6,6 @@ spec:
   # Default values copied from <project_dir>/helm-charts/mvc-db-app/values.yaml
   frontend:
     image: quay.io/vishwajitdandage/my-app
+    imagePullSecrets: []
+    replicaCount: 1
+    
