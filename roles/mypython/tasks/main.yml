@@ -50,7 +50,7 @@
           app: flaskcalculator
         ports:
           - protocol: TCP
-            port: 5001
+            port: 5000
             targetPort: 5000
 - name: create route for flaskcalculator
   k8s:
@@ -67,6 +67,5 @@
         to:
           kind: Service
           name: flaskservice
-          weight: 100
         port:
-          targetPort: 5001
+          targetPort: 5000
