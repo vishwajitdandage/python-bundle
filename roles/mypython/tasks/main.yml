@@ -8,65 +8,65 @@
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: flask-calculator
+        name: flaskcalculator
         namespace: "{{ ansible_operator_meta.namespace }}"
         labels:
-          app: flask-calculator
+          app: flaskcalculator
       spec:
         replicas: 1
         selector:
           matchLabels:
-            app: flask-calculator
+            app: flaskcalculator
         template:
           metadata:
             labels:
-              app: flask-calculator  
+              app: flaskcalculator  
           spec:
             serviceAccount: my-python-app
             containers:
-            - name: flask-calculator
+            - name: flaskcalculator
               image: "{{ frontend.image }}"
               imagePullPolicy: Always
               ports:
-              - name: flask-calculator
+              - name: flaskcalculator
                 containerPort: 5000
               securityContext: {}
           serviceAccountName: my-python-app
           serviceAccount: my-python-app
         strategy:
           type: Recreate
-- name: create service for flask-calculator
+- name: create service for flaskcalculator
   k8s:
     definition:
       apiVersion: v1
       kind: Service
       metadata: 
-        name: flask-service
+        name: flaskservice
         namespace: '{{ ansible_operator_meta.namespace }}'
         labels:
-          app: flask-calculator
+          app: flaskcalculator
       spec:
         selector:
-          app: flask-calculator
+          app: flaskcalculator
         ports:
           - protocol: TCP
             port: 5001
             targetPort: 5000
-- name: create route for flask-calculator
+- name: create route for flaskcalculator
   k8s:
     definition:
       apiVersion: route.openshift.io/v1
       kind: Route
       metadata:
-        name: flask-route
+        name: flaskroute
         namespace: '{{ ansible_operator_meta.namespace }}'
         labels:
-          app: flask-calculator
+          app: flaskcalculator
       spec:
         path: /
         to:
           kind: Service
-          name: flask-service
+          name: flaskservice
           weight: 100
         port:
           targetPort: 5001
