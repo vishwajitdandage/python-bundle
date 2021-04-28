@@ -20,8 +20,8 @@
           spec:
             serviceAccount: my-python-app
             containers:
-            - name: go-web
-              image: {{ frontend.image }}
+            - name: flask-calculator
+              image: "{{ frontend.image }}"
               imagePullPolicy: Always
               ports:
               - name: flask-calculator
