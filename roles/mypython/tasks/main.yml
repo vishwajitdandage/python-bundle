@@ -1,3 +1,4 @@
+---
 - name: deploy calci frontend
   vars:
     frontend: 
@@ -13,7 +14,7 @@
 	  selector:
 		matchLabels:
 		  app: flask-calculator
-	  replicas: 3
+	  replicas: 2
 	  template:
 		metadata:
 		  labels:
