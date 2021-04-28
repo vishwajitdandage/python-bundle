@@ -24,7 +24,7 @@ spec:
       serviceAccountName: my-python-app
       containers:
         - name: manager
-          image: quay.io/<username>/ansible-my-python-app-operator:v0.0.1
+          image: quay.io/vishwajitdandage/ansible-my-python-app-operator
           imagePullPolicy: Always
           args:
             - "--enable-leader-election"
