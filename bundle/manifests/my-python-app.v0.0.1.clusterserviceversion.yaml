@@ -35,9 +35,9 @@ spec:
     owned:
     - description: Deploy Flask-APP
       displayName: Flask
-	    kind: Mypython
+      kind: Mypython
       name: mypythons.example.com
-	    resources:
+      resources:
       - kind: Route
         name: ''
         version: route.openshift.io/v1
